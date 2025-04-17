@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-load-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-load-generator
+  template:
+    metadata:
+      labels:
+        app: http-load-generator
+    spec:
+      containers:
+      - name: http-load-generator
+        image: europe-central2-docker.pkg.dev/research-k8s-cluster/httploadgenerator/httploadgenerator:latest
+        args: ["director"]
+        ports:
+        - containerPort: 8080 
