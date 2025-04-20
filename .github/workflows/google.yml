@@ -64,7 +64,13 @@ jobs:
           cache: 'maven'
 
       - name: 'Build with Maven'
-        run: mvn -B package --file pom.xml
+        run: |-
+          mvn -B package --file pom.xml \
+          -Ddocker.registry.url=${{ secrets.GAR_LOCATION }}-docker.pkg.dev \
+          -Ddocker.registry.project=${{ secrets.GCP_PROJECT_ID }} \
+          -Ddocker.registry.repository=${{ secrets.GAR_REPOSITORY }} \
+          -Ddocker.image.name=${IMAGE} \
+          -Ddocker.image.tag=${GITHUB_SHA}
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -91,14 +97,6 @@ jobs:
       - name: 'Build and push Docker container'
         run: |-
           DOCKER_TAG="${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GAR_REPOSITORY }}/${IMAGE}:${GITHUB_SHA}"
-          
-          docker build \
-            --tag "${DOCKER_TAG}" \
-            --build-arg GITHUB_SHA="${GITHUB_SHA}" \
-            --build-arg GITHUB_REF="${GITHUB_REF}" \
-            --build-arg JAR_FILE="tools.descartes.dlim.httploadgenerator/target/httploadgenerator.jar" \
-            -f tools.descartes.dlim.httploadgenerator/Dockerfile .
-          
           docker push "${DOCKER_TAG}"
 
       - name: 'Set up Kustomize'
