@@ -20,7 +20,7 @@ RUN yum update -y && \
     && yum clean all
 
 ARG JAR_FILE
-COPY ./target/httploadgenerator.jar app.jar
+COPY ${JAR_FILE} app.jar
 
 # Set library path and other environment variables
 ENV LD_LIBRARY_PATH=/usr/lib:/usr/local/lib

@@ -96,6 +96,7 @@ jobs:
             --tag "${DOCKER_TAG}" \
             --build-arg GITHUB_SHA="${GITHUB_SHA}" \
             --build-arg GITHUB_REF="${GITHUB_REF}" \
+            --build-arg JAR_FILE="tools.descartes.dlim.httploadgenerator/target/httploadgenerator.jar" \
             -f tools.descartes.dlim.httploadgenerator/Dockerfile .
           
           docker push "${DOCKER_TAG}"
